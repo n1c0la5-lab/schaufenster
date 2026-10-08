@@ -7,10 +7,11 @@ Ein Obsidian-Vault zum Kopieren: die Content-Pipeline einer reisenden
 Treibholz-Marke. „DriftCraft.eu“ ist ein **Beispielname** — setz deinen eigenen ein.
 Die Fundorte, Logbuch-Einträge und Stücke sind Beispiele aus der Praxis.
 
-## Öffnen
+## So holst du es
 
-1. ZIP entpacken (oder den Ordner `driftcraft/` aus dem Repo kopieren).
-2. In Obsidian: *Ordner als Vault öffnen* → den entpackten Ordner wählen.
+1. Auf GitHub **Code → Download ZIP** (lädt das ganze Schaufenster) und entpacken,
+   oder `git clone` des Repos.
+2. In Obsidian: *Ordner als Vault öffnen* → den Ordner `driftcraft` wählen.
 
 ## Ordner
 

@@ -20,5 +20,5 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-Gilt für die Hilfsskripte in scripts/ und .github/. Die Projekt-Ordner tragen
+Gilt für die Hilfsskripte in scripts/, hooks/ und .github/. Die Projekt-Ordner tragen
 jeweils eine eigene LICENSE.

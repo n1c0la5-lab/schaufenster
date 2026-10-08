@@ -1,12 +1,11 @@
-// Schaufenster: Sucher und ZIP-Bau, jeweils mit Gegenprobe in beide Richtungen.
-// Läuft mit `npm test` (Node ≥ 22, keine Abhängigkeiten) und in der Action vor jedem Release.
+// Schaufenster: Sucher mit Gegenproben in beide Richtungen.
+// Läuft mit `npm test` (Node ≥ 22, keine Abhängigkeiten), im pre-push-Hook und in der Action.
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { projekte, quellOrdner, dateienListe, zipBauen, zipLesen, zipGegenQuelle } from './zip.mjs'
-import { pruefeAlles, pruefeOrdner, pruefeText, pruefeReadme, wortHash, SPERRLISTE, ERLAUBT } from './pruefen.mjs'
+import { projekte, quellOrdner, dateienListe, pruefeAlles, pruefeOrdner, pruefeText, pruefeReadme, wortHash, SPERRLISTE, ERLAUBT } from './pruefen.mjs'
 
 const mitKopie = (quelle, fn) => {
   const kopie = fs.mkdtempSync(path.join(os.tmpdir(), 'schaufenster-'))
@@ -30,31 +29,7 @@ test('2 Sucher: das ganze Repo ist sauber', () => {
   assert.deepEqual(ergebnis.flatMap((e) => e.funde), [])
 })
 
-for (const name of projekte()) {
-  test(`3 ${name}: ZIP enthält genau die Quelle, Datei für Datei`, () => {
-    const buf = zipBauen(quellOrdner(name), name)
-    assert.equal(zipLesen(buf).size, dateienListe(quellOrdner(name)).length)
-    assert.deepEqual(zipGegenQuelle(buf, quellOrdner(name), name), [])
-    assert.ok(zipLesen(buf).has(`${name}/LICENSE`), 'LICENSE fehlt in der ZIP')
-    assert.ok(buf.equals(zipBauen(quellOrdner(name), name)), 'zweimal gebaut, verschiedene Bytes')
-  })
-}
-
-test('4 Gegenprobe ZIP: Abweichungen zwischen ZIP und Quelle werden erkannt', () => {
-  mitKopie(quellOrdner('driftcraft'), (kopie) => {
-    const alt = zipBauen(kopie, 'driftcraft')
-    fs.appendFileSync(path.join(kopie, 'CLAUDE.md'), '\nein Satz mehr\n')
-    fs.writeFileSync(path.join(kopie, 'neu.md'), 'neu\n')
-    fs.rmSync(path.join(kopie, 'LIESMICH.md'))
-    assert.deepEqual(zipGegenQuelle(alt, kopie, 'driftcraft').sort(), [
-      'anderer Inhalt: CLAUDE.md',
-      'fehlt in der ZIP: neu.md',
-      'nur in der ZIP: driftcraft/LIESMICH.md',
-    ])
-  })
-})
-
-test('5 Gegenprobe Sucher: eingeschmuggelte Angaben werden gefunden', () => {
+test('3 Gegenprobe Sucher: eingeschmuggelte Angaben werden gefunden', () => {
   const liste = new Map([[wortHash('Testvorname'), 'Person'], [wortHash('Bus Modell'), 'Fahrzeug']])
   const arten = (text) => pruefeText(text, 'x.md', ERLAUBT.driftcraft, liste).map((f) => f.art)
   assert.deepEqual(arten('Ein Maker (Testvorname aka. X) zieht los.'), ['Sperrliste: Person'])
@@ -73,7 +48,7 @@ test('5 Gegenprobe Sucher: eingeschmuggelte Angaben werden gefunden', () => {
   assert.deepEqual(arten('siehe [[treibholz-shop-projekt]]'), ['Nicht mitgeliefertes Dokument'])
 })
 
-test('6 Gegenprobe Sucher: erlaubte Beispiele bleiben grün — aber nur in ihrem Ordner', () => {
+test('4 Gegenprobe Sucher: erlaubte Beispiele bleiben grün — aber nur in ihrem Ordner', () => {
   const liste = new Map([[wortHash('Testvorname'), 'Person']])
   const funde = (text, erlaubt = ERLAUBT.driftcraft) => pruefeText(text, 'x.md', erlaubt, liste)
   assert.deepEqual(funde('gps: "57.7361, 10.6207"'), [])
@@ -86,7 +61,7 @@ test('6 Gegenprobe Sucher: erlaubte Beispiele bleiben grün — aber nur in ihre
   assert.deepEqual(funde('gps: N 46.511512°, E 24.473579°', {}).map((f) => f.art), ['Koordinate'])
 })
 
-test('7 Gegenprobe Ordner: Binärdatei, fehlende LICENSE, Umlaut-Dateiname', () => {
+test('5 Gegenprobe Ordner: Binärdatei, fehlende LICENSE, Umlaut-Dateiname', () => {
   mitKopie(null, (dir) => {
     fs.writeFileSync(path.join(dir, 'bild.png'), Buffer.from([0x89, 0x50, 0x4e, 0x47, 0, 0, 0, 0]))
     fs.writeFileSync(path.join(dir, 'Über.md'), 'Text\n')
@@ -99,13 +74,13 @@ test('7 Gegenprobe Ordner: Binärdatei, fehlende LICENSE, Umlaut-Dateiname', () 
   assert.ok(SPERRLISTE.size >= 4)
 })
 
-test('8 Gegenprobe README: fehlender und erfundener Ordner werden gemeldet', () => {
+test('6 Gegenprobe README: fehlender und erfundener Ordner werden gemeldet', () => {
   assert.deepEqual(pruefeReadme('[A](./driftcraft/)', ['driftcraft']), [])
   assert.deepEqual(pruefeReadme('nichts verlinkt', ['driftcraft']).map((f) => f.wert), ['Ordner nicht aufgeführt: driftcraft'])
   assert.deepEqual(pruefeReadme('[A](./driftcraft/) [B](./folgt/)', ['driftcraft']).map((f) => f.wert), ['aufgeführt, aber nicht da: folgt'])
 })
 
-test('9 Gegenprobe Gesamtlauf: leeres Repo ist nicht grün', () => {
+test('7 Gegenprobe Gesamtlauf: leeres Repo ist nicht grün', () => {
   mitKopie(null, (root) => {
     const funde = pruefeAlles(root).flatMap((e) => e.funde)
     assert.ok(funde.some((f) => f.art === 'leer'))

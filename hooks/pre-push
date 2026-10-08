@@ -1,0 +1,27 @@
+#!/bin/sh
+# Sperre vor dem Push: Das Repo ist öffentlich, also wird vorher geprüft.
+# Einrichten nach dem Klonen:  git config core.hooksPath hooks
+#
+# Geprüft wird der Arbeitsbaum. Damit er dem entspricht, was gepusht wird,
+# verweigert der Hook auch bei uncommitteten Änderungen und wenn ein anderer
+# Stand als HEAD gepusht werden soll.
+set -u
+cd "$(git rev-parse --show-toplevel)" || exit 1
+
+if [ -n "$(git status --porcelain --untracked-files=all)" ]; then
+  echo "pre-push: Arbeitsbaum nicht sauber — erst committen oder wegräumen, dann pushen." >&2
+  exit 1
+fi
+
+head=$(git rev-parse HEAD)
+while read -r lokal_ref lokal_sha remote_ref remote_sha; do
+  case "$lokal_sha" in 0000000000000000000000000000000000000000) continue ;; esac
+  if [ "$lokal_sha" != "$head" ]; then
+    echo "pre-push: $lokal_ref ist nicht HEAD — nur den ausgecheckten Stand pushen, der geprüft wurde." >&2
+    exit 1
+  fi
+done
+
+node scripts/pruefen.mjs || { echo "pre-push: Sucher hat etwas gefunden — Push verweigert." >&2; exit 1; }
+npm test --silent >/dev/null 2>&1 || { echo "pre-push: npm test rot — Push verweigert (Details: npm test)." >&2; exit 1; }
+echo "pre-push: geprüft, sauber."

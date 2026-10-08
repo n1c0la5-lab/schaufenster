@@ -12,7 +12,32 @@ import fs from 'node:fs'
 import path from 'node:path'
 import crypto from 'node:crypto'
 import { fileURLToPath } from 'node:url'
-import { ROOT, projekte, quellOrdner, dateienListe } from './zip.mjs'
+
+export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
+// Projekt = jeder Ordner im Root, außer Werkzeug.
+const KEIN_PROJEKT = new Set(['scripts', 'hooks', 'node_modules'])
+export function projekte(root = ROOT) {
+  return fs.readdirSync(root, { withFileTypes: true })
+    .filter((e) => e.isDirectory() && !e.name.startsWith('.') && !KEIN_PROJEKT.has(e.name))
+    .map((e) => e.name)
+    .sort()
+}
+export const quellOrdner = (name, root = ROOT) => path.join(root, name)
+
+// Alle Dateien unter dir, als relative Pfade mit '/', sortiert.
+export function dateienListe(dir) {
+  const out = []
+  const lauf = (rel) => {
+    for (const e of fs.readdirSync(path.join(dir, rel), { withFileTypes: true })) {
+      const r = rel ? `${rel}/${e.name}` : e.name
+      if (e.isDirectory()) lauf(r)
+      else if (e.isFile()) out.push(r)
+      else throw new Error(`Weder Datei noch Ordner (Symlink?): ${r}`)
+    }
+  }
+  lauf('')
+  return out.sort()
+}
 
 export const normal = (s) => s.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase()
 export const wortHash = (wort) =>

@@ -1,0 +1,21 @@
+# Zweitlinie hinter dem pre-push-Hook: dieselbe Prüfung bei jedem Push und PR.
+# Die eigentliche Sperre ist der Hook — diese Action läuft erst, wenn schon gepusht ist.
+name: pruefen
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  pruefen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/pruefen.mjs
+      - run: npm test
