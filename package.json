@@ -1,0 +1,11 @@
+{
+  "name": "schaufenster",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test scripts/test.mjs",
+    "pruefen": "node scripts/pruefen.mjs",
+    "zip": "node scripts/zip.mjs"
+  }
+}

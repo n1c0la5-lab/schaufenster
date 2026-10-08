@@ -1,0 +1,42 @@
+# Gate bei jedem Push und PR; bei einem Tag v* zusätzlich ein Release mit einer ZIP pro Projekt-Ordner.
+# Stabiler Download-Link für die Website: …/releases/latest/download/<ordner>.zip
+name: pruefen-und-release
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pruefen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/pruefen.mjs
+      - run: npm test
+
+  release:
+    needs: pruefen
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/pruefen.mjs
+      - run: node scripts/zip.mjs
+      - name: Release mit ZIPs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/*.zip --title "$GITHUB_REF_NAME" --notes "Eine ZIP pro Projekt-Ordner, gebaut aus diesem Tag."

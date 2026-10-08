@@ -1,0 +1,113 @@
+// Schaufenster: Sucher und ZIP-Bau, jeweils mit Gegenprobe in beide Richtungen.
+// Läuft mit `npm test` (Node ≥ 22, keine Abhängigkeiten) und in der Action vor jedem Release.
+import { test } from 'node:test'
+import assert from 'node:assert/strict'
+import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
+import { projekte, quellOrdner, dateienListe, zipBauen, zipLesen, zipGegenQuelle } from './zip.mjs'
+import { pruefeAlles, pruefeOrdner, pruefeText, pruefeReadme, wortHash, SPERRLISTE, ERLAUBT } from './pruefen.mjs'
+
+const mitKopie = (quelle, fn) => {
+  const kopie = fs.mkdtempSync(path.join(os.tmpdir(), 'schaufenster-'))
+  try {
+    if (quelle) fs.cpSync(quelle, kopie, { recursive: true })
+    return fn(kopie)
+  } finally {
+    fs.rmSync(kopie, { recursive: true, force: true })
+  }
+}
+
+test('1 es gibt Projekt-Ordner, und jeder ist nicht leer', () => {
+  const ordner = projekte()
+  assert.ok(ordner.includes('driftcraft'), `gefunden: ${ordner}`)
+  for (const name of ordner) assert.ok(dateienListe(quellOrdner(name)).length >= 2, `${name} fast leer`)
+})
+
+test('2 Sucher: das ganze Repo ist sauber', () => {
+  const ergebnis = pruefeAlles()
+  assert.ok(ergebnis.find((e) => e.name === 'driftcraft').dateien >= 10, 'Sucher hat driftcraft nicht angeschaut')
+  assert.deepEqual(ergebnis.flatMap((e) => e.funde), [])
+})
+
+for (const name of projekte()) {
+  test(`3 ${name}: ZIP enthält genau die Quelle, Datei für Datei`, () => {
+    const buf = zipBauen(quellOrdner(name), name)
+    assert.equal(zipLesen(buf).size, dateienListe(quellOrdner(name)).length)
+    assert.deepEqual(zipGegenQuelle(buf, quellOrdner(name), name), [])
+    assert.ok(zipLesen(buf).has(`${name}/LICENSE`), 'LICENSE fehlt in der ZIP')
+    assert.ok(buf.equals(zipBauen(quellOrdner(name), name)), 'zweimal gebaut, verschiedene Bytes')
+  })
+}
+
+test('4 Gegenprobe ZIP: Abweichungen zwischen ZIP und Quelle werden erkannt', () => {
+  mitKopie(quellOrdner('driftcraft'), (kopie) => {
+    const alt = zipBauen(kopie, 'driftcraft')
+    fs.appendFileSync(path.join(kopie, 'CLAUDE.md'), '\nein Satz mehr\n')
+    fs.writeFileSync(path.join(kopie, 'neu.md'), 'neu\n')
+    fs.rmSync(path.join(kopie, 'LIESMICH.md'))
+    assert.deepEqual(zipGegenQuelle(alt, kopie, 'driftcraft').sort(), [
+      'anderer Inhalt: CLAUDE.md',
+      'fehlt in der ZIP: neu.md',
+      'nur in der ZIP: driftcraft/LIESMICH.md',
+    ])
+  })
+})
+
+test('5 Gegenprobe Sucher: eingeschmuggelte Angaben werden gefunden', () => {
+  const liste = new Map([[wortHash('Testvorname'), 'Person'], [wortHash('Bus Modell'), 'Fahrzeug']])
+  const arten = (text) => pruefeText(text, 'x.md', ERLAUBT.driftcraft, liste).map((f) => f.art)
+  assert.deepEqual(arten('Ein Maker (Testvorname aka. X) zieht los.'), ['Sperrliste: Person'])
+  assert.deepEqual(arten('TESTVORNAME'), ['Sperrliste: Person'])
+  assert.deepEqual(arten('mit dem bus-modell unterwegs'), ['Sperrliste: Fahrzeug'])
+  assert.deepEqual(arten('schreib an jemand@example.org'), ['E-Mail-Adresse'])
+  assert.deepEqual(arten('Ruf an: +40 712 345 678'), ['Telefonnummer'])
+  assert.deepEqual(arten('Tel. 0171 2345678'), ['Telefonnummer'])
+  assert.deepEqual(arten('STRIPE=sk_live_abcdefghijklmnop'), ['Schlüssel'])
+  assert.deepEqual(arten('api_key: abcdefgh12345'), ['Schlüssel'])
+  assert.deepEqual(arten('x 3f9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a y'), ['Schlüssel (lange Zeichenkette)'])
+  assert.deepEqual(arten('gps: "48.1374, 11.5755"'), ['Koordinate'])
+  assert.deepEqual(arten('gps: N 46.5000°, E 24.4000°'), ['Koordinate'])
+  assert.deepEqual(arten('w3w: ///drei.echte.woerter'), ['what3words'])
+  assert.deepEqual(arten('Ein Maker (Nicht Kollektiv) aka. Parzival'), ['Name (Parzival)'])
+  assert.deepEqual(arten('siehe [[treibholz-shop-projekt]]'), ['Nicht mitgeliefertes Dokument'])
+})
+
+test('6 Gegenprobe Sucher: erlaubte Beispiele bleiben grün — aber nur in ihrem Ordner', () => {
+  const liste = new Map([[wortHash('Testvorname'), 'Person']])
+  const funde = (text, erlaubt = ERLAUBT.driftcraft) => pruefeText(text, 'x.md', erlaubt, liste)
+  assert.deepEqual(funde('gps: "57.7361, 10.6207"'), [])
+  assert.deepEqual(funde('gps: N 46.511512°, E 24.473579°'), [])
+  assert.deepEqual(funde('gps: "N46.482411, E24.425506"'), [])
+  assert.deepEqual(funde('w3w: ///wichtigere.einlage.hügelig und ///wort.wort.wort'), [])
+  assert.deepEqual(funde('(c) 2026 Kollektiv Parzival 3000, www.parzival-3000.com'), [])
+  assert.deepEqual(funde('Lochabstand 192 mm, Format 1000x1500, Nr. 0042, 2026-04-29'), [])
+  // Ein anderer Ordner erbt die Ausnahmen nicht.
+  assert.deepEqual(funde('gps: N 46.511512°, E 24.473579°', {}).map((f) => f.art), ['Koordinate'])
+})
+
+test('7 Gegenprobe Ordner: Binärdatei, fehlende LICENSE, Umlaut-Dateiname', () => {
+  mitKopie(null, (dir) => {
+    fs.writeFileSync(path.join(dir, 'bild.png'), Buffer.from([0x89, 0x50, 0x4e, 0x47, 0, 0, 0, 0]))
+    fs.writeFileSync(path.join(dir, 'Über.md'), 'Text\n')
+    assert.deepEqual(pruefeOrdner(dir).map((f) => f.art).sort(), ['Binärdatei', 'Dateiname nicht ASCII', 'Lizenz fehlt'])
+    fs.writeFileSync(path.join(dir, 'LICENSE'), 'x\n')
+    fs.rmSync(path.join(dir, 'Über.md'))
+    const sha = '8f0a4f4a1d0d4b8f' // falscher Hash: bleibt ein Fund
+    assert.deepEqual(pruefeOrdner(dir, { binaer: { 'bild.png': sha } }).map((f) => f.art), ['Binärdatei'])
+  })
+  assert.ok(SPERRLISTE.size >= 4)
+})
+
+test('8 Gegenprobe README: fehlender und erfundener Ordner werden gemeldet', () => {
+  assert.deepEqual(pruefeReadme('[A](./driftcraft/)', ['driftcraft']), [])
+  assert.deepEqual(pruefeReadme('nichts verlinkt', ['driftcraft']).map((f) => f.wert), ['Ordner nicht aufgeführt: driftcraft'])
+  assert.deepEqual(pruefeReadme('[A](./driftcraft/) [B](./folgt/)', ['driftcraft']).map((f) => f.wert), ['aufgeführt, aber nicht da: folgt'])
+})
+
+test('9 Gegenprobe Gesamtlauf: leeres Repo ist nicht grün', () => {
+  mitKopie(null, (root) => {
+    const funde = pruefeAlles(root).flatMap((e) => e.funde)
+    assert.ok(funde.some((f) => f.art === 'leer'))
+  })
+})
