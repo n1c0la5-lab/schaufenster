@@ -4,7 +4,7 @@
 ## Was ist das hier?
 
 Dies ist die Content-Pipeline für eine reisende Treibholz-Marke (Beispiel: DriftCraft.eu — setz deinen eigenen Namen ein). Ein Maker zieht mit dem Camper an europäischen Küsten entlang, sammelt Treibholz, baut daraus Türgriffe und Möbelbeschläge, und verkauft sie
-über einen eigenen Web-Shop. Diese Pipeline ist die Erzählmaschine dahinter.
+über einen eigenen Web-Shop [[treibholz-shop-projekt]]. Diese Pipeline ist die Erzählmaschine dahinter.
 
 **Kernidee:** Eine Eingabe vom Strand wird zu fünf Ausgaben im Netz.
 
@@ -31,7 +31,8 @@ strandgut/
 ├── kontext/
 │   ├── marke.md               ← Stimme, Story, Werte, was wir nicht sind
 │   ├── zielgruppe.md          ← Wer kauft, wer liest, wer folgt
-│   └── kuesten.md             ← Wo gesammelt werden darf, pro Land
+│   ├── kuesten.md             ← Wo gesammelt werden darf, pro Land
+│   └── treibholz-shop-projekt.md ← Katalog-Shop: Einzelstücke, ein Zahlungslink pro Stück
 ├── skills/
 │   ├── feld-log.md            ← /feld   — Roh-Eintrag vom Strand
 │   ├── stueck-story.md        ← /stueck — Aus Fund wird Produkt mit Story
@@ -46,7 +47,8 @@ strandgut/
     ├── blog/                  ← Reise-Posts, Story-Artikel
     ├── social/                ← Pinterest + Instagram-Drafts
     ├── newsletter/            ← Wochen- oder Drop-Mails
-    └── sanity/               ← Produkt-Beschreibungen, ready to upload
+    ├── sanity/               ← Produkt-Beschreibungen, ready to upload
+    └── FAQ/                  ← Kundenfragen, z. B. Montage
 ```
 
 ---

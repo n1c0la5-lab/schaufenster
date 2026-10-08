@@ -46,7 +46,7 @@ test('3 Gegenprobe Sucher: eingeschmuggelte Angaben werden gefunden', () => {
   assert.deepEqual(arten('gps: N 46.5000°, E 24.4000°'), ['Koordinate'])
   assert.deepEqual(arten('w3w: ///drei.echte.woerter'), ['what3words'])
   assert.deepEqual(arten('Ein Maker (Nicht Kollektiv) aka. Parzival'), ['Name (Parzival)'])
-  assert.deepEqual(arten('siehe [[treibholz-shop-projekt]]'), ['Nicht mitgeliefertes Dokument'])
+  assert.deepEqual(arten('siehe [[print-on-demand-erweiterung]]'), ['Nicht mitgeliefertes Dokument'])
 })
 
 test('4 Gegenprobe Sucher: erlaubte Beispiele bleiben grün — aber nur in ihrem Ordner', () => {

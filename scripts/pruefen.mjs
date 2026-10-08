@@ -86,7 +86,7 @@ const MUSTER = [
   ['Schlüssel (JWT)', /\beyJ[\w-]{10,}\.[\w-]{10,}/g],
   ['Name (Parzival)', /parzival/gi],
   ['Konto', /n1c0la5|vision4u/gi],
-  ['Nicht mitgeliefertes Dokument', /treibholz-shop-projekt|print-on-demand-erweiterung|adlerhorst/gi],
+  ['Nicht mitgeliefertes Dokument', /print-on-demand-erweiterung|adlerhorst/gi],
 ]
 
 const KOORDINATE = /\b([NS]\s*)?(-?\d{1,2}\.\d{3,})°?\s*,\s*([EWO]\s*)?(-?\d{1,3}\.\d{3,})°?/g
