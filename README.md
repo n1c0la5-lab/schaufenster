@@ -22,9 +22,10 @@ Das Repo ist öffentlich, deshalb prüft ein Hook vor jedem Push. Nach dem Klone
 git config core.hooksPath hooks
 ```
 
-Der Hook `hooks/pre-push` führt `node scripts/pruefen.mjs` und `npm test` aus (Node ≥ 22, keine
-Abhängigkeiten) und verweigert den Push bei einem Fund, bei uncommitteten Änderungen oder wenn ein
-anderer Stand als HEAD gepusht werden soll. Dieselbe Prüfung läuft danach als GitHub-Action.
+Der Hook `hooks/pre-push` prüft jeden Commit, der gepusht wird — Dateistand, Nachricht, Autor- und
+Committer-E-Mail (nur `…@users.noreply.github.com`) — mit `node scripts/pruefen.mjs --commit <sha>`,
+danach `npm test` (Node ≥ 22, keine Abhängigkeiten). Bei einem Fund verweigert er den Push.
+Dieselbe Prüfung des Arbeitsstands läuft danach als GitHub-Action.
 
 Der Sucher meldet Namen aus der Sperrliste, E-Mail-Adressen, Telefonnummern, Schlüssel,
 Koordinaten und what3words-Adressen außerhalb der Erlaubnisliste des Ordners, ungeprüfte

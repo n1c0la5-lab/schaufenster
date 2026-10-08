@@ -2,26 +2,29 @@
 # Sperre vor dem Push: Das Repo ist öffentlich, also wird vorher geprüft.
 # Einrichten nach dem Klonen:  git config core.hooksPath hooks
 #
-# Geprüft wird der Arbeitsbaum. Damit er dem entspricht, was gepusht wird,
-# verweigert der Hook auch bei uncommitteten Änderungen und wenn ein anderer
-# Stand als HEAD gepusht werden soll.
+# Für jede gepushte Ref wird jeder neue Commit geprüft — Dateistand, Nachricht,
+# Autor- und Committer-E-Mail —, nicht nur der Arbeitsbaum. Ein Name, der in einem
+# Commit steht und im nächsten wieder entfernt wird, bleibt sonst im Verlauf öffentlich.
 set -u
 cd "$(git rev-parse --show-toplevel)" || exit 1
+null=0000000000000000000000000000000000000000
 
-if [ -n "$(git status --porcelain --untracked-files=all)" ]; then
-  echo "pre-push: Arbeitsbaum nicht sauber — erst committen oder wegräumen, dann pushen." >&2
-  exit 1
-fi
-
-head=$(git rev-parse HEAD)
+commits=""
 while read -r lokal_ref lokal_sha remote_ref remote_sha; do
-  case "$lokal_sha" in 0000000000000000000000000000000000000000) continue ;; esac
-  if [ "$lokal_sha" != "$head" ]; then
-    echo "pre-push: $lokal_ref ist nicht HEAD — nur den ausgecheckten Stand pushen, der geprüft wurde." >&2
-    exit 1
+  [ "$lokal_sha" = "$null" ] && continue            # Löschen einer Ref: nichts zu prüfen
+  if [ "$remote_sha" = "$null" ] || ! git cat-file -e "$remote_sha^{commit}" 2>/dev/null; then
+    neu=$(git rev-list "$lokal_sha") || exit 1       # Remote leer oder unbekannt: alles bis zur Ref
+  else
+    neu=$(git rev-list "$remote_sha..$lokal_sha") || exit 1
   fi
+  commits="$commits $neu"
 done
 
-node scripts/pruefen.mjs || { echo "pre-push: Sucher hat etwas gefunden — Push verweigert." >&2; exit 1; }
+commits=$(printf '%s\n' $commits | sort -u)
+if [ -n "$commits" ]; then
+  echo "pre-push: prüfe $(printf '%s\n' $commits | wc -l | tr -d ' ') Commit(s)"
+  # shellcheck disable=SC2086
+  node scripts/pruefen.mjs --commit $commits || { echo "pre-push: Fund in einem Commit — Push verweigert." >&2; exit 1; }
+fi
 npm test --silent >/dev/null 2>&1 || { echo "pre-push: npm test rot — Push verweigert (Details: npm test)." >&2; exit 1; }
 echo "pre-push: geprüft, sauber."

@@ -5,7 +5,8 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { projekte, quellOrdner, dateienListe, pruefeAlles, pruefeOrdner, pruefeText, pruefeReadme, wortHash, SPERRLISTE, ERLAUBT } from './pruefen.mjs'
+import { execFileSync } from 'node:child_process'
+import { projekte, quellOrdner, dateienListe, pruefeAlles, pruefeCommit, pruefeCommitAngaben, ROOT, pruefeOrdner, pruefeText, pruefeReadme, wortHash, SPERRLISTE, ERLAUBT } from './pruefen.mjs'
 
 const mitKopie = (quelle, fn) => {
   const kopie = fs.mkdtempSync(path.join(os.tmpdir(), 'schaufenster-'))
@@ -84,5 +85,42 @@ test('7 Gegenprobe Gesamtlauf: leeres Repo ist nicht grün', () => {
   mitKopie(null, (root) => {
     const funde = pruefeAlles(root).flatMap((e) => e.funde)
     assert.ok(funde.some((f) => f.art === 'leer'))
+  })
+})
+
+const NOREPLY = '1+test@users.noreply.github.com'
+const TESTLISTE = new Map([[wortHash('Testvorname'), 'Person']])
+
+test('8 Commit-Angaben: Nachricht und E-Mails', () => {
+  const ok = { sha: 'abc1234', nachricht: 'Ein Satz\n\nCo-Authored-By: Claude <noreply@anthropic.com>\n', autorName: 'konto', autorMail: NOREPLY, committerName: 'konto', committerMail: NOREPLY }
+  assert.deepEqual(pruefeCommitAngaben(ok, TESTLISTE), [])
+  assert.deepEqual(pruefeCommitAngaben({ ...ok, nachricht: 'Fix von Testvorname' }, TESTLISTE).map((f) => f.art), ['Sperrliste: Person'])
+  assert.deepEqual(pruefeCommitAngaben({ ...ok, autorMail: 'jemand@example.org' }, TESTLISTE).map((f) => f.art), ['Autor-E-Mail'])
+  assert.deepEqual(pruefeCommitAngaben({ ...ok, committerMail: '' }, TESTLISTE).map((f) => f.art), ['Committer-E-Mail'])
+  assert.deepEqual(pruefeCommitAngaben({ ...ok, autorName: 'Testvorname X' }, TESTLISTE).map((f) => f.art), ['Sperrliste: Person'])
+  assert.deepEqual(pruefeCommitAngaben({ ...ok, nachricht: 'Co-Authored-By: X <x@example.org>' }, TESTLISTE).map((f) => f.art), ['E-Mail-Adresse'])
+  assert.deepEqual(pruefeCommitAngaben({ ...ok, nachricht: 'This reverts commit 810db2a4163773424620108f75b05c89c005af6f.' }, TESTLISTE), [])
+  assert.deepEqual(pruefeCommitAngaben({ ...ok, nachricht: 'token 810db2a4163773424620108f75b05c89c005af6f' }, TESTLISTE).map((f) => f.art), ['Schlüssel (lange Zeichenkette)'])
+})
+
+test('9 Commit-Verlauf: entfernter Name bleibt ein Fund im alten Commit', () => {
+  mitKopie(null, (repo) => {
+    const g = (...a) => execFileSync('git', ['-c', 'user.name=konto', '-c', `user.email=${NOREPLY}`, '-c', 'commit.gpgsign=false', '-c', 'core.hooksPath=/dev/null', ...a], { cwd: repo }).toString().trim()
+    g('init', '-q', '-b', 'main')
+    fs.cpSync(quellOrdner('driftcraft'), path.join(repo, 'driftcraft'), { recursive: true })
+    fs.copyFileSync(path.join(ROOT, 'README.md'), path.join(repo, 'README.md'))
+    g('add', '-A'); g('commit', '-q', '-m', 'sauber')
+    const sauber = g('rev-parse', 'HEAD')
+    fs.appendFileSync(path.join(repo, 'driftcraft', 'CLAUDE.md'), '\nTestvorname war hier\n')
+    g('commit', '-q', '-am', 'rein')
+    const rein = g('rev-parse', 'HEAD')
+    g('revert', '--no-edit', 'HEAD')
+    const raus = g('rev-parse', 'HEAD')
+    assert.deepEqual(pruefeCommit(sauber, repo, TESTLISTE), [])
+    assert.deepEqual(pruefeCommit(rein, repo, TESTLISTE).map((f) => f.art), ['Sperrliste: Person'])
+    assert.deepEqual(pruefeCommit(raus, repo, TESTLISTE), [])
+    // Der Dateistand kommt aus dem Commit, nicht aus dem Arbeitsbaum.
+    fs.rmSync(path.join(repo, 'driftcraft', 'LICENSE'))
+    assert.deepEqual(pruefeCommit(raus, repo, TESTLISTE), [])
   })
 })
