@@ -5,15 +5,19 @@
 # Für jede gepushte Ref wird jeder neue Commit geprüft — Dateistand, Nachricht,
 # Autor- und Committer-E-Mail —, nicht nur der Arbeitsbaum. Ein Name, der in einem
 # Commit steht und im nächsten wieder entfernt wird, bleibt sonst im Verlauf öffentlich.
+# „Neu“ heißt: noch auf keiner Ref dieses Remotes. Was dort schon liegt, ist veröffentlicht;
+# ein verweigerter Push schützt es nicht mehr, würde aber jeden neuen Branch blockieren
+# (z. B. Merge-Commits aus der GitHub-Oberfläche, oder alte Stände nach einer engeren Ausnahme).
 set -u
 cd "$(git rev-parse --show-toplevel)" || exit 1
 null=0000000000000000000000000000000000000000
+remote_name=$1
 
 commits=""
 while read -r lokal_ref lokal_sha remote_ref remote_sha; do
   [ "$lokal_sha" = "$null" ] && continue            # Löschen einer Ref: nichts zu prüfen
   if [ "$remote_sha" = "$null" ] || ! git cat-file -e "$remote_sha^{commit}" 2>/dev/null; then
-    neu=$(git rev-list "$lokal_sha") || exit 1       # Remote leer oder unbekannt: alles bis zur Ref
+    neu=$(git rev-list "$lokal_sha" --not --remotes="$remote_name") || exit 1   # neue Ref: alles, was das Remote noch nicht hat
   else
     neu=$(git rev-list "$remote_sha..$lokal_sha") || exit 1
   fi

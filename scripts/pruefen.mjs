@@ -68,8 +68,9 @@ export const ERLAUBT = {
     ],
     w3w: ['///wort.wort.wort', '///wichtigere.einlage.hügelig', '///vertiefen.mögliches.gemustert'],
     binaer: {},
-    // Entscheidung 2026-10-11: Kontakt für das Domain-Angebot in der LIESMICH (steht auch im Whois).
-    kontakt: ['parzival3000@proton.me', 'https://x.com/Parzival_3000', '@Parzival_3000'],
+    // Entscheidung 2026-10-11: Kontakt für das Domain-Angebot in der LIESMICH (Mail steht auch im Whois).
+    // Instagram statt X (Nicolas, 2026-10-11) — die X-Angaben sind damit wieder Funde.
+    kontakt: ['parzival3000@proton.me', 'https://www.instagram.com/parzival.3000/', '@parzival.3000'],
   },
 }
 const LEER = { koordinaten: [], w3w: [], binaer: {}, kontakt: [] }

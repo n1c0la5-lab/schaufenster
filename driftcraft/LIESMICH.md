@@ -53,7 +53,7 @@ Die Beispiele im Obsidian-Vault, also Logbuch, Stücke und zwei Fundorte, stamme
 
 ## Der Name
 
-DriftCraft.eu steht hier als Beispielname. Die Domain gibt es wirklich, und sie wartet noch auf ihre Reise. Wer aus diesem Plan eine macht, kann sich melden, per Mail an parzival3000@proton.me oder per Direktnachricht auf X an [@Parzival_3000](https://x.com/Parzival_3000). Über einen Ausgleich lässt sich reden.
+DriftCraft.eu steht hier als Beispielname. Die Domain gibt es wirklich, und sie wartet noch auf ihre Reise. Wer aus diesem Plan eine macht, kann sich melden, per Mail an parzival3000@proton.me oder per Direktnachricht auf Instagram an [@parzival.3000](https://www.instagram.com/parzival.3000/). Über einen Ausgleich lässt sich reden.
 
 ## Der Maßstab
 
