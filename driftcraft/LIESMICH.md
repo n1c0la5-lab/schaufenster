@@ -10,7 +10,7 @@ Wer unterwegs leben will, fragt zuerst, wovon. Die übliche Antwort ist ein Lapt
 
 Treibholz sammeln, an Flüssen und an Küsten. Daraus Griffe und Beschläge machen, keine Möbel. Die Stücke einzeln im Netz verkaufen, jedes mit Fundort, Datum und Foto.
 
-Das Wasser hat das Holz schon geformt. Die Arbeit besteht darin, zu sehen, was es werden kann, und nur so viel wegzunehmen wie nötig.
+Das Wasser hat das Holz schon geformt. Die Arbeit besteht darin, zu sehen, was es werden kann.
 
 ## Das Produkt
 
