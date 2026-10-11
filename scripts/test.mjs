@@ -64,12 +64,14 @@ test('4 Gegenprobe Sucher: erlaubte Beispiele bleiben grün — aber nur in ihre
 
 test('4b Kontakt: nur die erlaubte Schreibweise, nur in driftcraft', () => {
   const arten = (text, erlaubt = ERLAUBT.driftcraft) => pruefeText(text, 'x.md', erlaubt, new Map()).map((f) => f.art)
-  const zeile = 'per Mail an parzival3000@proton.me oder auf X an [@Parzival_3000](https://x.com/Parzival_3000).'
+  const zeile = 'per Mail an parzival3000@proton.me oder auf Instagram an [@parzival.3000](https://www.instagram.com/parzival.3000/).'
   assert.deepEqual(arten(zeile), [])
   // Gegenproben: anderer Ordner, andere Adresse, Handle ohne @, Name allein.
   assert.deepEqual(arten(zeile, {}), ['E-Mail-Adresse', 'Name (Parzival)', 'Name (Parzival)', 'Name (Parzival)'])
   assert.deepEqual(arten('parzival3000@gmail.com'), ['E-Mail-Adresse', 'Name (Parzival)'])
-  assert.deepEqual(arten('x.com/Parzival_3000'), ['Name (Parzival)'])
+  assert.deepEqual(arten('instagram.com/parzival.3000'), ['Name (Parzival)'])
+  // X ist abgelöst: Handle und Link sind wieder Funde.
+  assert.deepEqual(arten('[@Parzival_3000](https://x.com/Parzival_3000)'), ['Name (Parzival)', 'Name (Parzival)'])
   assert.deepEqual(arten('gebaut von Parzival'), ['Name (Parzival)'])
 })
 
