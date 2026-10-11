@@ -57,6 +57,7 @@ export const SPERRLISTE = new Map([
 // Erlaubnisliste pro Projekt-Ordner. Ein Ordner ohne Eintrag hat keine Ausnahmen.
 //   koordinaten: Lat/Lon, die stehen bleiben dürfen · w3w: what3words-Adressen
 //   binaer: Pfad → sha256 einer von Hand geprüften Binärdatei (Bildinhalt angesehen, Metadaten entfernt)
+//   kontakt: wörtlich erlaubte Kontaktangaben (Mail, Handle, Link) — nur genau diese Schreibweise
 export const ERLAUBT = {
   driftcraft: {
     // Entscheidung 2026-10-08: die echten Fundorte bleiben als Beispiele stehen.
@@ -67,9 +68,11 @@ export const ERLAUBT = {
     ],
     w3w: ['///wort.wort.wort', '///wichtigere.einlage.hügelig', '///vertiefen.mögliches.gemustert'],
     binaer: {},
+    // Entscheidung 2026-10-11: Kontakt für das Domain-Angebot in der LIESMICH (steht auch im Whois).
+    kontakt: ['parzival3000@proton.me', 'https://x.com/Parzival_3000', '@Parzival_3000'],
   },
 }
-const LEER = { koordinaten: [], w3w: [], binaer: {} }
+const LEER = { koordinaten: [], w3w: [], binaer: {}, kontakt: [] }
 
 // Der Absender darf vorkommen, eine Person „Parzival“ nicht.
 const ERLAUBTE_PHRASEN = [/kollektiv parzival 3000/gi, /parzival-3000\.com/gi]
@@ -101,6 +104,9 @@ export function pruefeText(text, datei, erlaubt = LEER, sperrliste = SPERRLISTE)
 
   let ohneAbsender = text
   for (const p of ERLAUBTE_PHRASEN) ohneAbsender = ohneAbsender.replace(p, (m) => ' '.repeat(m.length))
+  // Längste zuerst: der Link enthält den Handle.
+  for (const k of [...(erlaubt.kontakt ?? [])].sort((a, b) => b.length - a.length))
+    ohneAbsender = ohneAbsender.replaceAll(k, ' '.repeat(k.length))
   for (const [art, re] of MUSTER) for (const m of ohneAbsender.matchAll(re)) fund(art, m.index, m[0])
 
   for (const m of text.matchAll(KOORDINATE)) {
