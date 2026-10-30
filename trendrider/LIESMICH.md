@@ -58,7 +58,7 @@ Eine erste Messung über 16 Monate hatte das Gegenteil gezeigt. Sie hatte zwei F
 
 **Die Auswahl von Hand schlug den Zufall nicht messbar.** 92 Aufnahmen in eine Watchlist an 22 Tagen, jede verglichen mit dem Pool, aus dem sie gewählt wurde. Im Mittel lag die Aufnahme auf dem 51. Perzentil, Zufall wäre das 50. Diese Messung sieht allerdings nur große Vorsprünge, ab etwa dem 63. Perzentil. Ein kleiner Vorsprung bleibt möglich.
 
-**Die Rotation zwischen Faktoren trug Information und war trotzdem nicht handelbar.** 42 Varianten über zwölf Jahre. Die Schwelle, ab der ein Vorsprung zählt, war vor dem Lauf aufgeschrieben. Keine Variante erreichte sie, und nach der Korrektur für die vielen Versuche überlebte keine.
+**Die Rotation zwischen Faktoren trug Information und war trotzdem nicht handelbar.** 42 Varianten über zwölf Jahre. Die beste schlug den Zufall deutlich. Nach der Korrektur für die vielen Versuche überlebte aber keine, und das Verfahren, mit dem man die beste auswählen würde, hielt der Prüfung nicht stand. Eine vorher geschätzte Schwelle hätte hier sogar das Falsche gezeigt: Sie war zwölfmal zu streng, gemessen an dem, was der Zufall allein erzeugt.
 
 ## Was trug
 
@@ -86,6 +86,7 @@ Fast jeder dieser Fehler stand zuerst in einer Messung dieses Projekts und fiel 
 | Es fehlt der Vergleich | 73 % Trefferquote eines Signals waren die Trefferquote des Marktes. |
 | Der Schnitt im Nachhinein | „Heute noch auf der Watchlist“ schlug „wieder entfernt“, aber entfernt wurde, was schlecht lief. |
 | Ein Ausreißer trägt alles | Ein einziger Titel trug 98,91 % der Streuung einer Kennzahl. |
+| Geschätzte Schwelle | Eine vorher geschätzte Hürde war zwölfmal zu streng; gemessen an Zufallsläufen lag sie viel tiefer. Schwellen werden gemessen, nicht gesetzt. |
 | Viele Versuche | Von 42 Varianten überlebte keine die Korrektur. |
 | Überlappende Fenster | 15 Tage mit einem 20-Tage-Fenster sind nicht 15 Beobachtungen, sondern weniger als eine. |
 
