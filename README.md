@@ -8,6 +8,7 @@ Ein Projekt ist ein Ordner.
 | Projekt | Worum es geht | Quest |
 |---|---|---|
 | [DriftCraft](./driftcraft/) | Obsidian-Vault für eine reisende Treibholz-Marke: Strand → Werkstatt → Netz, mit Skills für Claude Code. | [parzival-3000.com/quests/driftcraft](https://www.parzival-3000.com/quests/driftcraft) |
+| [trendrider](./trendrider/) | Die Regeln der Trendfolger-Schule, an echten Kursdaten gegen blinden Einstieg nachgemessen — Mess-Skripte (Python). | — |
 
 ## Herunterladen
 
@@ -39,6 +40,7 @@ Jeder Ordner trägt seine eigene `LICENSE`:
 | Teil | Lizenz |
 |---|---|
 | `driftcraft/` | CC BY 4.0 |
+| `trendrider/` | Texte CC BY 4.0, Skripte MIT |
 | Hilfsskripte (`scripts/`, `hooks/`, `.github/`) | MIT (`LICENSE` im Root) |
 
 Rechteinhaber: Kollektiv Parzival 3000. „DriftCraft.eu“ ist im Pack nur ein Beispielname für die eigene Marke.

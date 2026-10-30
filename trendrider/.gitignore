@@ -1,0 +1,9 @@
+# Rohdaten und Ergebnisse bleiben lokal: Kursdaten von Yahoo dürfen nicht weiterverteilt werden.
+daten/
+ergebnisse/
+*.json
+*.npz
+*.parquet
+*.csv
+__pycache__/
+.venv/
