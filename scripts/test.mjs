@@ -120,7 +120,8 @@ test('9 Commit-Verlauf: entfernter Name bleibt ein Fund im alten Commit', () => 
   mitKopie(null, (repo) => {
     const g = (...a) => execFileSync('git', ['-c', 'user.name=konto', '-c', `user.email=${NOREPLY}`, '-c', 'commit.gpgsign=false', '-c', 'core.hooksPath=/dev/null', ...a], { cwd: repo }).toString().trim()
     g('init', '-q', '-b', 'main')
-    fs.cpSync(quellOrdner('driftcraft'), path.join(repo, 'driftcraft'), { recursive: true })
+    // Alle Projekt-Ordner, weil die README sie alle aufführt.
+    for (const o of projekte()) fs.cpSync(quellOrdner(o), path.join(repo, o), { recursive: true })
     fs.copyFileSync(path.join(ROOT, 'README.md'), path.join(repo, 'README.md'))
     g('add', '-A'); g('commit', '-q', '-m', 'sauber')
     const sauber = g('rev-parse', 'HEAD')
