@@ -21,10 +21,10 @@ Von rund fünfzehn Aussagen aus dem Umfeld dieser Schule waren die meisten im Sy
 | Raus, wenn die Linie bricht | ja |
 | Dünnes Volumen im Rücksetzer, ein aggressiver Docht am Tief | ja, als Teilfrage |
 | Die Volatilität zieht sich vor dem Ausbruch zusammen | nein |
-| Nur die relativ stärksten Titel kaufen | nein |
+| Nur die relativ stärksten Titel kaufen | ja, im Nachtrag |
 | Der erste Rücksetzer nach dem Ausbruch ist der beste | nein |
 | Gap nach oben auf einen Anlass | nein |
-| Stop knapp unter Einstand, nie verbilligen, Gewinner laufen lassen | **nein, und das ist der Kern** |
+| Stop knapp unter Einstand, nie verbilligen, Gewinner laufen lassen | **beschrieben, nicht entschieden** (Nachtrag) |
 
 ## Warum ein Beispiel kein Beweis ist
 
@@ -70,9 +70,29 @@ Er hat zwei Haken. Er kippt, sobald mehr als etwa 2 % der Titel im Jahr ganz aus
 
 Die Schule sagt selbst, ihr Ertrag komme nicht aus der Auswahl. Er komme aus der Führung: Verluste früh begrenzen, Gewinner laufen lassen, nie verbilligen, bei einer Trefferquote von oft nur 35 bis 50 %. Öffentlich spricht sie trotzdem fast nur über Auswahl, über Setups, Linien und Muster.
 
-Genau die Führung ist hier noch nicht gemessen. Ob ein enger Stop ab Einstand an diesen Titeln trägt oder ob das Nachkaufen des Rebalancings gewinnt, ist die nächste Frage.
+Genau die Führung ist hier noch nicht gemessen. Ob ein enger Stop ab Einstand an diesen Titeln trägt oder ob das Nachkaufen des Rebalancings gewinnt, ist die nächste Frage. *(So stand es im Oktober. Was seitdem gerechnet wurde, steht im Nachtrag. Die Frage ist schärfer geworden, beantwortet ist sie nicht.)*
 
 Ebenfalls offen: Titel, die vom Markt verschwunden sind, fehlen in allen Messungen. Und ein kleiner Vorsprung der Handauswahl ist mit so wenigen Tagen nicht zu entscheiden.
+
+## Nachtrag, November 2026: Auswahl und Führung zusammen
+
+Die Frage nach der Führung ließ sich nicht für sich allein stellen. Ob ein Stop trägt, hängt davon ab, was man vorher gekauft hat. Also wurde beides zusammen gerechnet, und diesmal in anderer Reihenfolge als zuvor: Erst wurden die Regeln aufgeschrieben und eingefroren, dann wurde gerechnet.
+
+**Der Aufbau.** Sieben Arten zu wählen: nach relativer Stärke, nach der Neigung der 150-Tage-Linie, nach der täglichen Schwankungsbreite, nach eng beieinanderliegenden Linien, nach hohem Volumen, als Kombination dieser fünf und nach relativer Stärke nur im gerade führenden Sektor. Dazu 27 Arten zu führen: gleich gewichten und jede Woche zurücksetzen, ein fester Stop 8 % unter Einstand, ein Stop nach der Schwankungsbreite, fest oder mit dem Kurs nachgezogen, mit und ohne Zukauf ins Plus, ausgelöst am Tagestief oder erst am Schlusskurs. Alles mit und ohne Marktfilter. Jede Kombination stand gegen tausend Zufallsauswahlen mit genau derselben Führung. Gezählt hat nur, was sich von diesem Zufall abhob.
+
+Die Daten waren in zwei Stücke geteilt. Das erste, Januar 2018 bis März 2025, war zum Suchen da. Das zweite, April 2025 bis September 2026, blieb verschlossen, bis feststand, was es prüfen sollte. Geöffnet wurde es einmal.
+
+**Im ersten Stück sah es nach einem Befund aus.** 109 von 432 Kombinationen lagen über dem 97,5. Perzentil ihres Zufalls. Durch Zufall allein wären etwa 11 zu erwarten gewesen. Nach einer Probe mit 2 % Totalausfällen je Titel und Jahr blieben 91 Kandidaten, die meisten mit Auswahl nach der Neigung der Linie, nach der Schwankungsbreite und nach relativer Stärke. Eng beieinanderliegende Linien und hohes Volumen stellten keinen einzigen.
+
+**Im zweiten Stück hielt keiner.** Vor dem Öffnen wurde für jede der drei tragenden Arten zu wählen der beste Kandidat festgelegt, ohne Nachrücken, falls einer fällt. Bestehen hieß: über dem 95. Perzentil. Die Neigung der Linie landete beim 85., die relative Stärke beim 90., die Schwankungsbreite beim 7.
+
+Danach, nur noch beschreibend, der Blick auf alle Kombinationen: Die relative Stärke, im ersten Stück vorn, fiel im Median auf das 9. Perzentil. Zwei Außenseiter des ersten Stücks lagen im zweiten bei 96. Die Rangfolge hat den Wechsel des Zeitraums nicht überstanden. Eine neue Regel darf daraus nicht werden, denn sie wäre nach dem Blick in das geöffnete Stück gewählt.
+
+**Und die Führung selbst?** Sie war nicht Gegenstand dieser Prüfung, denn jede Kombination stand gegen den Zufall mit derselben Führung. Man kann aber nachsehen, wie die Führungen mit blinder Auswahl liefen. Im ersten Stück lag der nachgezogene Stop vorn, im Median mit +109 % über gut sieben Jahre. Gleichgewicht mit Rebalancing lag im Mittelfeld bei +45 % und fiel mit 2 % Totalausfällen auf +3 %. Im zweiten Stück drehte es sich: Gleichgewicht vorn mit +74 % über anderthalb Jahre, der nachgezogene Stop auf Platz fünf mit +50 %. Gerechnet, nicht gehandelt, ohne echtes Geld. Das ist eine Beschreibung, kein Urteil. Sie zeigt nur, dass auch die Führung hier keine Rangfolge hat, die von einem Zeitraum zum nächsten hält.
+
+**Grenzen.** Das zweite Stück ist kurz, eine einzige Marktphase. Eine kleine Kante bleibt möglich, eine große und stabile ist unwahrscheinlich. Alle Titel sind heute noch an der Börse; die Probe mit Totalausfällen fängt das nur zum Teil auf.
+
+**Was jetzt läuft.** Sechs Bücher mit festen Regeln, eines davon blind gezogen, rechnen ab dem 6. November 2026 jeden Handelstag mit, ohne Eingriff. Ein Urteil über sie gibt es frühestens im November 2027. Das ist eine neue Messung auf Daten, die es heute noch nicht gibt, kein zweiter Blick auf das schon geöffnete Stück.
 
 ## Wie man sich beim Messen selbst belügt
 
@@ -88,6 +108,7 @@ Fast jeder dieser Fehler stand zuerst in einer Messung dieses Projekts und fiel 
 | Ein Ausreißer trägt alles | Ein einziger Titel trug 98,91 % der Streuung einer Kennzahl. |
 | Geschätzte Schwelle | Eine vorher geschätzte Hürde war zwölfmal zu streng; gemessen an Zufallsläufen lag sie viel tiefer. Schwellen werden gemessen, nicht gesetzt. |
 | Viele Versuche | Von 42 Varianten überlebte keine die Korrektur. |
+| Das Suchstück als Beweis | 91 Kandidaten aus 432 Kombinationen sahen nach einem Befund aus. Im verschlossenen Stück hielt keiner, und der Favorit fiel auf das 9. Perzentil. |
 | Überlappende Fenster | 15 Tage mit einem 20-Tage-Fenster sind nicht 15 Beobachtungen, sondern weniger als eine. |
 
 ## Was hier nachrechenbar ist
